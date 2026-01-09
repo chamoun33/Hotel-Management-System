@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.collections.ObservableList?>
+<?import javafx.scene.control.ComboBox?>
+<?import java.lang.String?>
+<fx:root type="javafx.scene.control.ComboBox" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+    <items>
+        <FXCollections fx:factory="observableArrayList">
+            <String fx:value="Single" />
+            <String fx:value="Double" />
+            <String fx:value="Suite" />
+            <String fx:value="Deluxe" />
+        </FXCollections>
+    </items>
+</fx:root>

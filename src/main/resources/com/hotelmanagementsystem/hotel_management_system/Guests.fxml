@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #f5f7fa;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+    <VBox alignment="TOP_CENTER" spacing="15" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <padding><Insets bottom="20" left="20" right="20" top="20" /></padding>
+
+        <!-- Search Bar -->
+        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+            <TextField fx:id="searchField" prefWidth="300" promptText="Search by name or room number..." />
+            <Button style="-fx-background-color: #2196f3; -fx-text-fill: white; -fx-background-radius: 5;" text="Search" />
+            <Button style="-fx-background-color: #666; -fx-text-fill: white; -fx-background-radius: 5;" text="Clear" />
+        </HBox>
+
+        <!-- Guests Table -->
+        <VBox spacing="10" VBox.vgrow="ALWAYS">
+            <Label style="-fx-text-fill: #333; -fx-font-size: 16; -fx-font-weight: bold;" text="All Guests" />
+            <TableView fx:id="guestsTable" prefHeight="408.0" prefWidth="760.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+                <columns>
+                    <TableColumn prefWidth="150" text="Name">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="name" />
+                        </cellValueFactory>
+                    </TableColumn>
+                    <TableColumn prefWidth="120" text="Phone">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="phone" />
+                        </cellValueFactory>
+                    </TableColumn>
+                    <TableColumn prefWidth="150" text="Email">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="email" />
+                        </cellValueFactory>
+                    </TableColumn>
+                    <TableColumn prefWidth="80" text="Room No.">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="roomNumber" />
+                        </cellValueFactory>
+                    </TableColumn>
+                    <TableColumn prefWidth="100" text="Check-In">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="checkInDate" />
+                        </cellValueFactory>
+                    </TableColumn>
+                    <TableColumn prefWidth="100" text="Status">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="status" />
+                        </cellValueFactory>
+                    </TableColumn>
+                </columns>
+            </TableView>
+        </VBox>
+
+        <!-- Summary -->
+        <HBox alignment="CENTER" spacing="20">
+            <Label style="-fx-text-fill: #666;" text="Total Guests:" />
+            <Label fx:id="totalGuestsLabel" style="-fx-text-fill: #2196f3; -fx-font-weight: bold;" text="0" />
+            <Label style="-fx-text-fill: #666;" text="Currently Staying:" />
+            <Label fx:id="currentGuestsLabel" style="-fx-text-fill: #4CAF50; -fx-font-weight: bold;" text="0" />
+        </HBox>
+    </VBox>
+</AnchorPane>
