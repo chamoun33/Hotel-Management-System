@@ -1,4 +1,4 @@
-package com.hotelmanagementsystem.hotel_management_system;
+package com.hotel.management.system;
 
 public class Launcher {
     public static void main(String[] args) {

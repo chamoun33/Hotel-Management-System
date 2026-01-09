@@ -1,4 +1,4 @@
-package com.hotelmanagementsystem.hotel_management_system;
+package com.hotel.management.system;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

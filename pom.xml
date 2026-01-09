@@ -38,6 +38,11 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.googlecode.libphonenumber</groupId>
+            <artifactId>libphonenumber</artifactId>
+            <version>8.13.16</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -47,8 +52,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
-                    <source>25</source>
-                    <target>25</target>
+                    <source>24</source>
+                    <target>24</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -61,7 +66,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                com.hotelmanagementsystem.hotel_management_system/com.hotelmanagementsystem.hotel_management_system.Application
+                                com.hotelmanagementsystem.hotel_management_system/com.hotel.management.system.Application
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
