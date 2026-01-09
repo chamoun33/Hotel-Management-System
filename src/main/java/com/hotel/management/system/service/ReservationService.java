@@ -1,5 +1,6 @@
 package com.hotel.management.system.service;
 
+import com.hotel.management.system.exception.HotelManagementException;
 import com.hotel.management.system.model.*;
 import com.hotel.management.system.repository.IGuestRepository;
 import com.hotel.management.system.repository.IReservationRepository;
@@ -29,14 +30,14 @@ public class ReservationService {
 
     public Reservation createReservation(UUID guestId, int roomNumber, LocalDate checkIn, LocalDate checkOut) {
         if (!roomService.isRoomAvailable(roomNumber, checkIn, checkOut)) {
-            throw new RuntimeException("Room not available for selected dates");
+            throw new HotelManagementException("Room not available for selected dates");
         }
 
         Guest guest = guestRepository.findById(guestId)
-                .orElseThrow(() -> new RuntimeException("Guest not found"));
+                .orElseThrow(() -> new HotelManagementException("Guest not found"));
 
         Room room = roomRepository.findByNumber(roomNumber)
-                .orElseThrow(() -> new RuntimeException("Room not found"));
+                .orElseThrow(() -> new HotelManagementException("Room not found"));
 
         Reservation reservation = new Reservation(UUID.randomUUID(), guest, room, checkIn, checkOut, ReservationStatus.CONFIRMED);
         reservationRepository.save(reservation);
@@ -67,10 +68,10 @@ public class ReservationService {
 
     public void checkIn(UUID reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new RuntimeException("Reservation not found"));
+                .orElseThrow(() -> new HotelManagementException("Reservation not found"));
 
         if (reservation.getStatus() != ReservationStatus.CONFIRMED) {
-            throw new RuntimeException("Only confirmed reservations can check in");
+            throw new HotelManagementException("Only confirmed reservations can check in");
         }
 
         reservation.setStatus(ReservationStatus.CHECKED_IN);
@@ -82,10 +83,10 @@ public class ReservationService {
 
     public void checkOut(UUID reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new RuntimeException("Reservation not found"));
+                .orElseThrow(() -> new HotelManagementException("Reservation not found"));
 
         if (reservation.getStatus() != ReservationStatus.CHECKED_IN) {
-            throw new RuntimeException("Only checked-in reservations can check out");
+            throw new HotelManagementException("Only checked-in reservations can check out");
         }
 
         reservation.setStatus(ReservationStatus.CHECKED_OUT);
@@ -109,7 +110,7 @@ public class ReservationService {
 
     public long getNumberOfNights(UUID reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new RuntimeException("Reservation not found"));
+                .orElseThrow(() -> new HotelManagementException("Reservation not found"));
 
         return ChronoUnit.DAYS.between(reservation.getCheckIn(), reservation.getCheckOut());
     }
