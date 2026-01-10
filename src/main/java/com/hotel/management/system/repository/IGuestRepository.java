@@ -11,4 +11,5 @@ public interface IGuestRepository {
     Optional<Guest> findById(UUID id);
     List<Guest> findAll();
     void deleteById(UUID id);
+    void update(Guest guest);
 }

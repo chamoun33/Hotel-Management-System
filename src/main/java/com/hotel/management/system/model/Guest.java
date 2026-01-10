@@ -23,3 +23,4 @@ public record Guest(
         return Objects.hash(id);
     }
 }
+

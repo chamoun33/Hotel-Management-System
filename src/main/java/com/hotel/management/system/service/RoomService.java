@@ -19,6 +19,10 @@ public class RoomService {
         this.roomRepository = roomRepository;
         this.reservationRepository = reservationRepository;
     }
+    public RoomService(IRoomRepository roomRepository) {
+        this.roomRepository = roomRepository;
+        this.reservationRepository = null; // or some dummy implementation
+    }
 
     public void addRoom(Room room) {
         roomRepository.save(room);

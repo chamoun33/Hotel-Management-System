@@ -26,6 +26,10 @@ public class GuestService {
         return guestRepository.findAll();
     }
 
+    public void updateGuest(Guest guest) {
+        guestRepository.update(guest);
+    }
+
     public void deleteGuest(UUID guestId) {
         guestRepository.deleteById(guestId);
     }

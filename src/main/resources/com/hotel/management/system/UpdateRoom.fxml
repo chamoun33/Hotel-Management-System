@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="488.0" prefWidth="515.0" spacing="12" style="-fx-background-color: white; -fx-padding: 20;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hotel.management.system.controller.UpdateRoomController">
+
+    <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Update Room Info" />
+    <Label text="Room Number">
+        <font>
+            <Font size="13.0" />
+        </font>
+    </Label>
+
+    <TextField fx:id="roomNumberField" promptText="e.g., 101" />
+    <Label text="Room Type">
+        <font>
+            <Font size="13.0" />
+        </font>
+    </Label>
+   <ComboBox fx:id="roomTypeCombo" prefHeight="25.0" prefWidth="475.0">
+      <items>
+         <FXCollections fx:factory="observableArrayList">
+            <String fx:value="Single" />
+            <String fx:value="Double" />
+            <String fx:value="Suite" />
+            <String fx:value="Deluxe" />
+         </FXCollections>
+      </items>
+   </ComboBox>
+    <Label text="Price per Night">
+        <font>
+            <Font size="13.0" />
+        </font>
+    </Label>
+    <TextField fx:id="roomPriceField" promptText="e.g., 100.00" />
+    <Label text="Status">
+        <font>
+            <Font size="13.0" />
+        </font>
+    </Label>
+   <ComboBox fx:id="roomStatusCombo" prefHeight="25.0" prefWidth="475.0">
+      <items>
+         <FXCollections fx:factory="observableArrayList">
+            <String fx:value="Available" />
+            <String fx:value="Occupied" />
+            <String fx:value="Maintenance" />
+         </FXCollections>
+      </items>
+   </ComboBox>
+   <Label text="Capacity">
+      <font>
+         <Font size="13.0" />
+      </font>
+   </Label>
+    <TextField fx:id="capacityField" prefWidth="475.0" promptText="e.g., 10" />
+   <Separator orientation="VERTICAL" prefHeight="32.0" prefWidth="475.0" visible="false" />
+
+    <HBox alignment="CENTER_RIGHT" prefHeight="33.0" prefWidth="475.0" spacing="10">
+        <Button onAction="#onCancel" text="Cancel" />
+        <Button onAction="#onUpdateRoom" style="-fx-background-color: #2196f3; -fx-text-fill: white;" text="Update Room" />
+    </HBox>
+</VBox>

@@ -10,9 +10,10 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox spacing="15" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<VBox spacing="15" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hotel.management.system.controller.RoomController">
     <padding><Insets bottom="10" left="10" right="10" top="10" /></padding>
 
     <!-- Add Room Form -->
@@ -21,7 +22,7 @@
         <HBox alignment="CENTER_LEFT" spacing="15">
             <VBox spacing="5">
                 <Label style="-fx-text-fill: #666; -fx-font-size: 14;" text="Room Number *" />
-                <TextField fx:id="roomNumberField" prefWidth="180" promptText="e.g., 101" />
+                <TextField fx:id="roomNumberField" onAction="#onAddRoom" prefWidth="180" promptText="e.g., 101" />
             </VBox>
 
             <VBox spacing="5">
@@ -55,9 +56,19 @@
                     </items>
                 </ComboBox>
             </VBox>
-
-            <Button fx:id="addRoomBtn" prefHeight="51.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14; -fx-background-radius: 8; -fx-pref-height: 40; -fx-pref-width: 100;" text="Add Room" VBox.vgrow="ALWAYS" />
         </HBox>
+      <HBox alignment="CENTER" prefHeight="36.0" prefWidth="765.0">
+         <children>
+            <VBox spacing="5">
+               <children>
+                  <Label style="-fx-text-fill: #666; -fx-font-size: 14;" text="Capacity *" />
+                  <TextField fx:id="capacityField" prefWidth="180" promptText="e.g., 4" />
+               </children>
+            </VBox>
+             <Region prefHeight="65.0" prefWidth="485.0" HBox.hgrow="ALWAYS" />
+                     <Button fx:id="addRoomBtn" onAction="#onAddRoom" prefHeight="0.0" prefWidth="83.0" style="-fx-background-color: #2196f3; -fx-text-fill: white; -fx-font-size: 14; -fx-background-radius: 8; -fx-pref-height: 30; -fx-pref-width: 100;" text="Add Room" />
+         </children>
+      </HBox>
     </VBox>
 
     <!-- Rooms Table -->
@@ -65,11 +76,12 @@
         <Label style="-fx-text-fill: #333; -fx-font-size: 18; -fx-font-weight: bold;" text="All Rooms" />
         <TableView fx:id="roomsTable" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
             <columns>
-                <TableColumn prefWidth="100.0" text="Room No." />
-                <TableColumn prefWidth="100.0" text="Type" />
-                <TableColumn prefWidth="100.0" text="Price" />
-                <TableColumn prefWidth="100.0" text="Status" />
-                <TableColumn prefWidth="150.0" text="Actions" />
+                <TableColumn fx:id="roomNumberColumn" prefWidth="141.0" text="Room No." />
+                <TableColumn fx:id="roomTypeColumn" prefWidth="103.0" text="Type" />
+                <TableColumn fx:id="roomPriceColumn" prefWidth="165.0" text="Price" />
+                <TableColumn fx:id="roomStatusColumn" prefWidth="130.0" text="Status" />
+                <TableColumn fx:id="capacityColumn" prefWidth="126.0" text="Capacity" />
+            <TableColumn fx:id="actionsColumn" prefWidth="126.0" text="Actions" />
             </columns>
         </TableView>
     </VBox>

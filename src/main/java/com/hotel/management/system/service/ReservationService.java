@@ -44,8 +44,16 @@ public class ReservationService {
         return reservation;
     }
 
+    public void updateStatus(UUID reservationId, ReservationStatus status){
+        reservationRepository.updateStatus(reservationId, status);
+    }
+
     public void cancelReservation(UUID reservationId) {
         reservationRepository.updateStatus(reservationId, ReservationStatus.CANCELLED);
+    }
+
+    public void deleteReservation(UUID reservationId) {
+        reservationRepository.deleteById(reservationId);
     }
 
     public List<Reservation> getReservationsByGuest(UUID guestId) {
@@ -56,6 +64,11 @@ public class ReservationService {
 
     public List<Reservation> getAllReservations() {
         return reservationRepository.findAll();
+    }
+
+    public List<Reservation> getAllOccupiedReservations() {
+        return reservationRepository.findAll().stream()
+                .filter(r -> r.getStatus() == ReservationStatus.CHECKED_IN).toList();
     }
 
     public long getOccupiedRooms(LocalDate today) {
@@ -117,6 +130,11 @@ public class ReservationService {
                 .orElseThrow(() -> new HotelManagementException("Reservation not found"));
 
         return ChronoUnit.DAYS.between(reservation.getCheckIn(), reservation.getCheckOut());
+    }
+
+    public long getNumberOfNightsBetweenDates(LocalDate checkIn, LocalDate checkOut) {
+
+        return ChronoUnit.DAYS.between(checkIn, checkOut);
     }
 
 }

@@ -6,16 +6,22 @@ import java.sql.SQLException;
 
 public class DB implements ConnectionProvider {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/hotelManagementSystem?serverTimezone=UTC&useSSL=false";
+    private static final String URL = "jdbc:mysql://localhost:3306/HotelManagementSystem";
     private static final String USER = "root";
-    private static final String PASS = "admin123";
+    private static final String PASSWORD = "@DavidO24#001[MySQL]";
 
-    private DB() {} // prevent instantiation
+    private DB() {}
 
-    public static final DB INSTANCE = new DB(); // singleton instance
+    public static final DB INSTANCE = new DB();
 
     @Override
-    public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASS);
+    public Connection getConnection() {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            return DriverManager.getConnection(URL, USER, PASSWORD);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to obtain DB connection", e);
+        }
     }
 }
+

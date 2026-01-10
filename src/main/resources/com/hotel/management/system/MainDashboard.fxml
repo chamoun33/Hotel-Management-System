@@ -9,7 +9,8 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color: #f5f7fa;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hotel.management.system.MainController">
+<?import javafx.scene.control.ScrollPane?>
+<BorderPane prefHeight="840.0" prefWidth="1000.0" minHeight="840" style="-fx-background-color: #f5f7fa;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hotel.management.system.MainController">
 
     <!-- TOP HEADER -->
     <top>
@@ -47,17 +48,17 @@
 
             <!-- Menu Items -->
             <VBox spacing="5" style="-fx-padding: 0 10 20 10;">
-                <Button fx:id="dashboardBtn" style="-fx-background-color: #2196f3; -fx-text-fill: white; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 12 20;" text="📊 Dashboard" />
+                <Button fx:id="dashboardBtn" prefHeight="44.0" prefWidth="130.0" style="-fx-background-color: #2196f3; -fx-text-fill: white; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 12 20;" text="📊 Dashboard" />
 
-                <Button fx:id="roomsBtn" style="-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 12 20;" text="🛏️ Rooms" />
+                <Button fx:id="roomsBtn" prefHeight="44.0" prefWidth="130.0" style="-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 12 20;" text="🛏️ Rooms" />
 
-                <Button fx:id="bookingBtn" style="-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 12 20;" text="📅 Booking" />
+                <Button fx:id="bookingBtn" prefHeight="44.0" prefWidth="130.0" style="-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 12 20;" text="📅 Booking" />
 
-                <Button fx:id="guestsBtn" style="-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 12 20;" text="👥 Guests" />
+                <Button fx:id="guestsBtn" prefHeight="44.0" prefWidth="130.0" style="-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 12 20;" text="👥 Guests" />
 
-                <Button fx:id="checkinBtn" style="-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 12 20;" text="✅ Check-In" />
+                <Button fx:id="checkinBtn" prefHeight="44.0" prefWidth="130.0" style="-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 12 20;" text="✅ Check-In" />
 
-                <Button fx:id="checkoutBtn" style="-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 12 20;" text="🚪 Check-Out" />
+                <Button fx:id="checkoutBtn" prefHeight="44.0" prefWidth="130.0" style="-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 12 20;" text="🚪 Check-Out" />
             </VBox>
 
             <!-- Stats Section -->
@@ -83,11 +84,18 @@
 
     <!-- MAIN CONTENT AREA -->
     <center>
-        <StackPane fx:id="contentArea" style="-fx-padding: 20;">
-            <!-- Dynamic content will be loaded here -->
-            <!-- Default: Dashboard content -->
-            <fx:include source="checkIn.fxml" />
-        </StackPane>
+        <ScrollPane fitToWidth="true"
+                    fitToHeight="true"
+                    pannable="true"
+                    style="-fx-background-color: transparent;">
+
+            <content>
+                <StackPane fx:id="contentArea" style="-fx-padding: 20;">
+                    <fx:include source="DashboardContent.fxml" />
+                </StackPane>
+            </content>
+        </ScrollPane>
+
     </center>
 
 </BorderPane>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="594.0" prefWidth="943.0" spacing="10" style="-fx-padding:20;-fx-background-color:#f5f7fa;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hotel.management.system.controller.ReservationTableController">
+
+    <Label style="-fx-font-size:18;-fx-font-weight:bold;" text="Reservations" />
+
+    <TableView fx:id="reservationTable" prefHeight="502.0" prefWidth="762.0">
+        <columns>
+            <TableColumn fx:id="guestColumn" prefWidth="195.0" text="Guest" />
+            <TableColumn fx:id="roomColumn" prefWidth="129.0" text="Room" />
+            <TableColumn fx:id="checkInColumn" prefWidth="117.0" text="Check-in" />
+            <TableColumn fx:id="checkOutColumn" prefWidth="164.0" text="Check-out" />
+            <TableColumn fx:id="statusColumn" prefWidth="126.0" text="Status" />
+            <TableColumn fx:id="actionsColumn" prefWidth="121.0" text="Actions" />
+        </columns>
+    </TableView>
+</VBox>
