@@ -12,4 +12,5 @@ public interface IUserRepository {
     Optional<User> findByUsername(String username);
     List<User> findAll();
     void deleteById(UUID id);
+    void updatePassword(UUID userId, String newPassword);
 }

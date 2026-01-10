@@ -3,6 +3,7 @@ package com.hotel.management.system.model;
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 public class User {
@@ -30,4 +31,15 @@ public class User {
     public PhoneNumber getPhoneNumber() { return phoneNumber; }
     public void setPhoneNumber(PhoneNumber phoneNumber) { this.phoneNumber = phoneNumber; }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User other)) return false;
+        return id.equals(other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

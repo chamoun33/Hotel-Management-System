@@ -26,7 +26,7 @@ public class UserService {
     }
 
     public void updatePassword(UUID userId, String newPassword) {
-        userRepository.findById(userId).ifPresent(user -> user.setPassword(newPassword));
+        userRepository.updatePassword(userId, newPassword);
     }
 
     public List<User> getAllUsers() {

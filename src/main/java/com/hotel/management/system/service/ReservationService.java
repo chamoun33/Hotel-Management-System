@@ -45,8 +45,7 @@ public class ReservationService {
     }
 
     public void cancelReservation(UUID reservationId) {
-        reservationRepository.findById(reservationId)
-                .ifPresent(r -> r.setStatus(ReservationStatus.CANCELLED));
+        reservationRepository.updateStatus(reservationId, ReservationStatus.CANCELLED);
     }
 
     public List<Reservation> getReservationsByGuest(UUID guestId) {
@@ -67,6 +66,7 @@ public class ReservationService {
     }
 
     public void checkIn(UUID reservationId) {
+        // Load reservation
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new HotelManagementException("Reservation not found"));
 
@@ -74,14 +74,19 @@ public class ReservationService {
             throw new HotelManagementException("Only confirmed reservations can check in");
         }
 
-        reservation.setStatus(ReservationStatus.CHECKED_IN);
-        reservation.getRoom().setStatus(RoomStatus.OCCUPIED);
+        // Load full room details
+        Room fullRoom = roomRepository.findByNumber(reservation.getRoom().getRoomNumber())
+                .orElseThrow(() -> new HotelManagementException("Room not found"));
 
-        reservationRepository.save(reservation);
-        roomRepository.save(reservation.getRoom());
+        // Update reservation status
+        reservationRepository.updateStatus(reservationId, ReservationStatus.CHECKED_IN);
+
+        // Update room status
+        roomRepository.updateStatus(fullRoom.getRoomNumber(), RoomStatus.OCCUPIED);
     }
 
     public void checkOut(UUID reservationId) {
+        // Load reservation
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new HotelManagementException("Reservation not found"));
 
@@ -89,12 +94,11 @@ public class ReservationService {
             throw new HotelManagementException("Only checked-in reservations can check out");
         }
 
-        reservation.setStatus(ReservationStatus.CHECKED_OUT);
-        reservation.getRoom().setStatus(RoomStatus.AVAILABLE);
+        reservationRepository.updateStatus(reservationId, ReservationStatus.CHECKED_OUT);
 
-        reservationRepository.save(reservation);
-        roomRepository.save(reservation.getRoom());
+        roomRepository.updateStatus(reservation.getRoom().getRoomNumber(), RoomStatus.AVAILABLE);
     }
+
 
     public long getCheckInsToday(LocalDate today) {
         return reservationRepository.findAll().stream()

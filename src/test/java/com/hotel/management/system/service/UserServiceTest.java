@@ -1,5 +1,7 @@
 package com.hotel.management.system.service;
 
+import com.hotel.management.system.database.ConnectionProvider;
+import com.hotel.management.system.database.TestDB;
 import com.hotel.management.system.model.Role;
 import com.hotel.management.system.model.User;
 import com.hotel.management.system.repository.IUserRepository;
@@ -7,6 +9,8 @@ import com.hotel.management.system.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,11 +22,21 @@ class UserServiceTest {
     private UserService userService;
     private User testUser;
 
+    private final ConnectionProvider connectionProvider = TestDB.INSTANCE;
+
     @BeforeEach
-    void setUp() {
-        IUserRepository userRepository = new UserRepository();
+    void setUp() throws Exception {
+        // Clean the users table before each test
+        try (Connection conn = connectionProvider.getConnection();
+             Statement stmt = conn.createStatement()) {
+            stmt.execute("DELETE FROM users");
+        }
+
+        // Inject TestDB into repository
+        IUserRepository userRepository = new UserRepository(connectionProvider);
         userService = new UserService(userRepository);
 
+        // Prepare a test user
         UUID testUserId = UUID.randomUUID();
         testUser = new User(testUserId, "luke_test_user", "luke_password123", Role.STAFF);
     }
@@ -67,14 +81,12 @@ class UserServiceTest {
     @Test
     void updatePassword_WhenUserExists_ShouldUpdatePassword() {
         userService.createUser(testUser.getUsername(), testUser.getPassword(), testUser.getRole());
-        Optional<User> createdUser = userService.getAllUsers().stream().findFirst();
-        assertTrue(createdUser.isPresent());
+        User createdUser = userService.getAllUsers().getFirst();
 
-        userService.updatePassword(createdUser.get().getId(), "luke_new_password456");
+        userService.updatePassword(createdUser.getId(), "luke_new_password456");
 
-        Optional<User> updatedUser = userService.getAllUsers().stream().findFirst();
-        assertTrue(updatedUser.isPresent());
-        assertEquals("luke_new_password456", updatedUser.get().getPassword());
+        User updatedUser = userService.getAllUsers().getFirst();
+        assertEquals("luke_new_password456", updatedUser.getPassword());
     }
 
     @Test
