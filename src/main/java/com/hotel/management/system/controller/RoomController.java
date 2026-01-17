@@ -1,10 +1,13 @@
 package com.hotel.management.system.controller;
 
+import com.hotel.management.system.MainController;
 import com.hotel.management.system.database.DB;
+import com.hotel.management.system.model.Role;
 import com.hotel.management.system.model.Room;
 import com.hotel.management.system.model.RoomStatus;
 import com.hotel.management.system.model.RoomType;
 import com.hotel.management.system.repository.RoomRepository;
+import com.hotel.management.system.security.CurrentUser;
 import com.hotel.management.system.service.RoomService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -36,6 +39,11 @@ public class RoomController {
 
 
     private RoomService roomService;
+    private MainController mainController;
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
+
 
 
     @FXML
@@ -60,6 +68,9 @@ public class RoomController {
     private void loadRooms() {
         roomsTable.getItems().clear();
         roomsTable.getItems().addAll(roomService.getAllRooms());
+        if (mainController != null) {
+            mainController.loadDashboardData();
+        }
     }
 
     @FXML
@@ -68,6 +79,13 @@ public class RoomController {
 
         try {
             int roomNumber = Integer.parseInt(roomNumberField.getText().trim());
+
+            if (roomService.getRoom(roomNumber).isPresent()) {
+                showError("Room with number " + roomNumber + " already exists!");
+                return;
+            }
+
+
             int capacity = Integer.parseInt(capacityField.getText().trim());
             double price = Double.parseDouble(roomPriceField.getText().trim());
 
@@ -77,6 +95,7 @@ public class RoomController {
             Room room = new Room(roomNumber, capacity, type, price, status);
             roomService.addRoom(room);
 
+            onClear();
             loadRooms(); // refresh table
 
         } catch (NumberFormatException e) {
@@ -91,7 +110,7 @@ public class RoomController {
         actionsColumn.setCellFactory(col -> new TableCell<>() {
             private final Button editBtn = new Button("Edit");
             private final Button deleteBtn = new Button("Delete");
-            private final HBox box = new HBox(10, editBtn, deleteBtn);
+            private final HBox box = new HBox(10, editBtn);
 
             {
                 editBtn.setStyle("-fx-background-color: #2196f3; -fx-text-fill: white;");
@@ -104,10 +123,13 @@ public class RoomController {
                     openEditRoomPopup(room);
                 });
 
-                deleteBtn.setOnAction(e -> {
-                    Room room = getTableView().getItems().get(getIndex());
-                    deleteRoom(room.getRoomNumber());
-                });
+                if (CurrentUser.get().getRole() == Role.ADMIN) {
+                    box.getChildren().add(deleteBtn);
+                    deleteBtn.setOnAction(e -> {
+                        Room room = getTableView().getItems().get(getIndex());
+                        deleteRoom(room.getRoomNumber());
+                    });
+                }
             }
 
             @Override
@@ -199,6 +221,16 @@ public class RoomController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    public void onClear() {
+        roomNumberField.setText("");
+        roomTypeCombo.setValue(null);
+        roomPriceField.setText("");
+        roomStatusCombo.setValue(null);
+        capacityField.setText("");
+
     }
 
 }

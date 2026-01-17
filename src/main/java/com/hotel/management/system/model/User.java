@@ -14,6 +14,14 @@ public class User {
     private Role role;
     private PhoneNumber phoneNumber;
 
+    public User(UUID id, String username, String password, Role role, PhoneNumber phoneNumber) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.phoneNumber = phoneNumber;
+    }
+
     public User(UUID id, String username, String password, Role role) {
         this.id = id;
         this.username = username;

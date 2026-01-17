@@ -48,6 +48,7 @@ public class RoomService {
         return reservationRepository.findAll().stream()
                 .filter(r -> r.getRoom().getRoomNumber() == roomNumber)
                 .filter(r -> r.getStatus() != ReservationStatus.CANCELLED)
+                .filter(r -> r.getStatus() != ReservationStatus.CHECKED_OUT)
                 .noneMatch(r -> !r.getCheckOut().isBefore(checkIn) && !r.getCheckIn().isAfter(checkOut));
     }
 
@@ -58,9 +59,23 @@ public class RoomService {
                 .collect(Collectors.toList());
     }
 
-    public long getRoomsUnderMaintenance() {
+    private long countByStatus(RoomStatus status) {
         return roomRepository.findAll().stream()
-                .filter(r -> r.getStatus() == RoomStatus.MAINTENANCE)
+                .filter(room -> room.getStatus() == status)
                 .count();
     }
+
+    public long getAvailableRoomsCount() {
+        return countByStatus(RoomStatus.AVAILABLE);
+    }
+
+    public long getOccupiedRoomsCount() {
+        return countByStatus(RoomStatus.OCCUPIED);
+    }
+
+    public long getRoomsUnderMaintenanceCount() {
+        return countByStatus(RoomStatus.MAINTENANCE);
+    }
+
+
 }

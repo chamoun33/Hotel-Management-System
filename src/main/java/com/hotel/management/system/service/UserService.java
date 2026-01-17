@@ -1,5 +1,6 @@
 package com.hotel.management.system.service;
 
+import com.google.i18n.phonenumbers.Phonenumber;
 import com.hotel.management.system.model.Role;
 import com.hotel.management.system.model.User;
 import com.hotel.management.system.repository.IUserRepository;
@@ -13,6 +14,11 @@ public class UserService {
 
     public UserService(IUserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    public void createFullUser(String username, String password, Role role, Phonenumber.PhoneNumber phonenumber) {
+        User user = new User(java.util.UUID.randomUUID(), username, password, role, phonenumber);
+        userRepository.save(user);
     }
 
     public void createUser(String username, String password, Role role) {

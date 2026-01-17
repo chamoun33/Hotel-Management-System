@@ -3,8 +3,10 @@ package com.hotel.management.system.controller;
 import com.hotel.management.system.database.DB;
 import com.hotel.management.system.model.Guest;
 import com.hotel.management.system.model.Reservation;
+import com.hotel.management.system.model.Role;
 import com.hotel.management.system.repository.GuestRepository;
 import com.hotel.management.system.repository.IGuestRepository;
+import com.hotel.management.system.security.CurrentUser;
 import com.hotel.management.system.service.GuestService;
 import javafx.fxml.FXML;
 import javafx.collections.FXCollections;
@@ -109,7 +111,7 @@ public class GuestsController {
                 return false; // no match
             });
 
-            totalGuestsLabel.setText(String.valueOf(filteredData.size())); // update total
+            totalGuestsLabel.setText(String.valueOf(filteredData.size()));
         });
 
     }
@@ -136,7 +138,7 @@ public class GuestsController {
 
             private final Button editBtn = new Button("Edit");
             private final Button deleteBtn = new Button("Delete");
-            private final HBox box = new HBox(10, editBtn, deleteBtn);
+            private final HBox box = new HBox(10, editBtn);
 
             {
                 editBtn.setStyle("-fx-background-color: #2196f3; -fx-text-fill: white;");
@@ -149,10 +151,13 @@ public class GuestsController {
                     openEditGuestPopup(guest);
                 });
 
-                deleteBtn.setOnAction(e -> {
-                    Guest guest = getTableView().getItems().get(getIndex());
-                    deleteGuest(guest.id());
-                });
+                if (CurrentUser.get().getRole() == Role.ADMIN) {
+                    box.getChildren().add(deleteBtn);
+                    deleteBtn.setOnAction(e -> {
+                        Guest guest = getTableView().getItems().get(getIndex());
+                        deleteGuest(guest.id());
+                    });
+                }
             }
 
             @Override

@@ -1,23 +1,26 @@
 package com.hotel.management.system.controller;
 
+import com.hotel.management.system.MainController;
 import com.hotel.management.system.database.DB;
-import com.hotel.management.system.model.Guest;
-import com.hotel.management.system.model.Reservation;
-import com.hotel.management.system.model.Room;
+import com.hotel.management.system.model.*;
 import com.hotel.management.system.repository.GuestRepository;
+import com.hotel.management.system.repository.PaymentRepository;
 import com.hotel.management.system.repository.ReservationRepository;
 import com.hotel.management.system.repository.RoomRepository;
+import com.hotel.management.system.security.CurrentUser;
 import com.hotel.management.system.service.GuestService;
+import com.hotel.management.system.service.PaymentService;
 import com.hotel.management.system.service.ReservationService;
 import com.hotel.management.system.service.RoomService;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
@@ -31,6 +34,25 @@ public class CheckOutController {
     @FXML private Label checkinDateLabel;
     @FXML private Label nightsStayedLabel;
     @FXML private Label checkoutRoomNumber;
+
+    @FXML private TableView<Payment> paymentsTable;
+    @FXML private TableColumn<Payment, String> paymentIdCol;
+    @FXML private TableColumn<Payment, Integer> roomNumberCol;
+    @FXML private TableColumn<Payment, String> guestNameCol;
+    @FXML private TableColumn<Payment, Double> amountCol;
+    @FXML private TableColumn<Payment, LocalDate> dateCol;
+    @FXML private TableColumn<Payment, LocalDate> receiver;
+    @FXML private TableColumn<Payment, String> methodCol;
+
+    @FXML private TabPane tabPane;
+    @FXML private Tab paymentsTab;
+
+    private MainController mainController;
+
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
+
 
     @FXML private Label roomRateLabel;
     @FXML private Label nightsCountLabel;
@@ -54,6 +76,7 @@ public class CheckOutController {
     private GuestService guestService;
     private RoomService roomService;
     private ReservationService reservationService;
+    private PaymentService paymentService;
 
     public void initialize() {
         // Initialize services
@@ -65,11 +88,61 @@ public class CheckOutController {
                 new GuestRepository(DB.INSTANCE),
                 roomService
         );
+        paymentService = new PaymentService(
+                new PaymentRepository(
+                        DB.INSTANCE,
+                        new ReservationRepository(DB.INSTANCE)
+                )
+        );
 
 
+        paymentIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        roomNumberCol.setCellValueFactory(cellData -> {
+            Payment payment = cellData.getValue();
+
+            return reservationService
+                    .getReservationById(payment.getReservation().getId())
+                    .map(r -> r.getRoom().getRoomNumber())
+                    .map(SimpleIntegerProperty::new)
+                    .orElse(new SimpleIntegerProperty(0))
+                    .asObject();
+        });
+
+        guestNameCol.setCellValueFactory(cellData -> {
+            Payment payment = cellData.getValue();
+
+            return reservationService
+                    .getReservationById(payment.getReservation().getId())
+                    .map(r -> resolveGuestName(r.getGuest().id()))
+                    .map(SimpleStringProperty::new)
+                    .orElse(new SimpleStringProperty("Unknown"));
+        });
+
+        amountCol.setCellValueFactory(new PropertyValueFactory<>("amount"));
+        dateCol.setCellValueFactory(new PropertyValueFactory<>("paymentDate"));
+        methodCol.setCellValueFactory(new PropertyValueFactory<>("method"));
+        receiver.setCellValueFactory(new PropertyValueFactory<>("receiver"));
+
+        loadPayments();
         loadOccupiedRooms();
 
+        tabPane.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
+
+            if (newTab == paymentsTab && CurrentUser.get().getRole() != Role.ADMIN) {
+
+                showAuthorizationError();
+
+                // go back to Check-Out tab
+                tabPane.getSelectionModel().select(oldTab);
+            }
+        });
+
     }
+
+    private void loadPayments() {
+        paymentsTable.getItems().setAll(paymentService.getAllPayments());
+    }
+
 
 
 
@@ -118,7 +191,11 @@ public class CheckOutController {
 
             if (newReservation != null) {
                 checkinDateLabel.setText(newReservation.getCheckIn().toString());
-                nightsStayedLabel.setText(String.valueOf(reservationService.getNumberOfNightsBetweenDates(newReservation.getCheckIn(), LocalDate.now())));
+                long nightStayed = reservationService.getNumberOfNightsBetweenDates(newReservation.getCheckIn(), LocalDate.now());
+                if(nightStayed == 0){
+                    nightStayed = 1;
+                }
+                nightsStayedLabel.setText(String.valueOf(nightStayed));
                 checkoutRoomNumber.setText(String.valueOf(newReservation.getRoom().getRoomNumber()));
             } else {
                 checkinDateLabel.setText("—");
@@ -182,7 +259,17 @@ public class CheckOutController {
             PaymentController controller = loader.getController();
             controller.setPayment(reservation);
 
-            stage.setOnHidden(e -> onClear());
+            stage.setOnHidden(e -> {
+                onClear();
+                loadOccupiedRooms();
+                loadPayments();
+
+                if (mainController != null) {
+                    mainController.loadDashboardData();
+                }
+            });
+
+
 
             stage.showAndWait();
 
@@ -236,5 +323,15 @@ public class CheckOutController {
         isCalculated = false;
     }
 
+    private void showAuthorizationError() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Authorization Required");
+        alert.setHeaderText("Access Denied");
+        alert.setContentText(
+                "You do not have permission to view payment history.\n" +
+                        "Please contact an administrator if you believe this is a mistake."
+        );
+        alert.showAndWait();
+    }
 
 }

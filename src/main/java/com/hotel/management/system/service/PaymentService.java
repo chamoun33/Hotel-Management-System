@@ -25,6 +25,12 @@ public class PaymentService {
         return payment;
     }
 
+    public Payment makePayment(Reservation reservation, double amount, PaymentMethod paymentMethod, String receiver) {
+        Payment payment = new Payment(UUID.randomUUID(), reservation, LocalDateTime.now(), amount, PaymentStatus.PAID ,paymentMethod, receiver);
+        paymentRepository.save(payment);
+        return payment;
+    }
+
     public Optional<Payment> getPayment(UUID paymentId) {
         return paymentRepository.findById(paymentId);
     }

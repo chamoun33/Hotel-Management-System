@@ -11,13 +11,11 @@ import com.hotel.management.system.service.RoomService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -34,6 +32,7 @@ public class UpdateReservationController {
     private GuestService guestService;
     private RoomService roomService;
     private final Map<UUID, String> guestNameCache = new HashMap<>();
+    @FXML Button saveChangesBtn;
 
     private String resolveGuestName(UUID guestId) {
         return guestNameCache.computeIfAbsent(guestId, id ->
@@ -67,8 +66,16 @@ public class UpdateReservationController {
 
 
         statusComboBox.setItems(
-                FXCollections.observableArrayList(ReservationStatus.values())
+                FXCollections.observableArrayList(
+                        Arrays.stream(ReservationStatus.values())
+                                .filter(s ->
+                                        s != ReservationStatus.CHECKED_IN &&
+                                                s != ReservationStatus.CHECKED_OUT
+                                )
+                                .toList()
+                )
         );
+
 
 
     }
@@ -87,8 +94,9 @@ public class UpdateReservationController {
         statusComboBox.setValue(reservation.getStatus());
 //        checkOutDatePicker.setValue(reservation.getCheckOut());
 
-        if(reservation.getStatus() == ReservationStatus.CHECKED_OUT){
+        if(reservation.getStatus() == ReservationStatus.CHECKED_OUT || reservation.getStatus() == ReservationStatus.CHECKED_IN){
             statusComboBox.setDisable(true);
+            saveChangesBtn.setDisable(true);
         }
     }
 

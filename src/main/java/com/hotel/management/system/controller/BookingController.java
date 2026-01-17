@@ -205,6 +205,11 @@ public class BookingController {
             return;
         }
 
+        if (checkIn.isBefore(LocalDate.now()) || checkOut.isBefore(LocalDate.now())) {
+            showError("Reservation date must be after today.");
+            return;
+        }
+
         if (checkOut.isBefore(checkIn) || checkOut.isEqual(checkIn)) {
             showError("Check-out date must be after check-in date.");
             return;

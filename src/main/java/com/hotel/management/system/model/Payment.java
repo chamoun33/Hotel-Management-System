@@ -11,6 +11,7 @@ public class Payment {
     private double amount;
     private PaymentStatus status;
     private PaymentMethod method;
+    private String receiver;
 
     public Payment(UUID id, Reservation reservation, LocalDateTime paymentDate, double amount, PaymentStatus status, PaymentMethod method) {
         this.id = id;
@@ -19,6 +20,15 @@ public class Payment {
         this.amount = amount;
         this.status = status;
         this.method = method;
+    }
+    public Payment(UUID id, Reservation reservation, LocalDateTime paymentDate, double amount, PaymentStatus status, PaymentMethod method, String receiver) {
+        this.id = id;
+        this.reservation = reservation;
+        this.paymentDate = paymentDate;
+        this.amount = amount;
+        this.status = status;
+        this.method = method;
+        this.receiver = receiver;
     }
 
     public UUID getId() { return id; }
@@ -31,6 +41,8 @@ public class Payment {
     public void setStatus(PaymentStatus status) { this.status = status; }
     public PaymentMethod getMethod() { return method; }
     public void setMethod(PaymentMethod method) { this.method = method; }
+    public void setReceiver(String receiver){this.receiver = receiver; }
+    public String getReceiver() {return receiver; }
 
     @Override
     public boolean equals(Object o) {

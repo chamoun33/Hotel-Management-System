@@ -1,11 +1,13 @@
 package com.hotel.management.system.controller;
 
+import com.hotel.management.system.MainController;
 import com.hotel.management.system.database.DB;
 import com.hotel.management.system.model.*;
 import com.hotel.management.system.repository.GuestRepository;
 import com.hotel.management.system.repository.PaymentRepository;
 import com.hotel.management.system.repository.ReservationRepository;
 import com.hotel.management.system.repository.RoomRepository;
+import com.hotel.management.system.security.CurrentUser;
 import com.hotel.management.system.service.GuestService;
 import com.hotel.management.system.service.PaymentService;
 import com.hotel.management.system.service.ReservationService;
@@ -104,13 +106,16 @@ public class PaymentController {
             }
 
             // Make payment
-            paymentService.makePayment(reservation, totalPayment, method);
+            paymentService.makePayment(reservation, amountReceived, method, CurrentUser.get().getUsername());
+
+            reservationService.checkOut(reservation.getId());
+
 
             // Optional: show success alert
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Payment Successful");
             alert.setHeaderText(null);
-            alert.setContentText(String.format("Payment of $%.2f received successfully via %s.", totalPayment, method));
+            alert.setContentText(String.format("Payment of $%.2f received successfully via %s.", amountReceived, method));
             alert.showAndWait();
 
             // Close the window

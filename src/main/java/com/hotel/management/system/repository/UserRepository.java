@@ -1,5 +1,6 @@
 package com.hotel.management.system.repository;
 
+import com.google.i18n.phonenumbers.Phonenumber;
 import com.hotel.management.system.database.ConnectionProvider;
 import com.hotel.management.system.model.*;
 
@@ -31,13 +32,15 @@ public class UserRepository implements IUserRepository {
             ps.setString(2, user.getUsername());
             ps.setString(3, user.getPassword());
             ps.setString(4, user.getRole().name());
-            ps.setString(5, user.getPhoneNumber() == null ? null : user.getPhoneNumber().toString());
+            ps.setString(5, user.getPhoneNumber() == null ? null : "+" + user.getPhoneNumber().getCountryCode()
+                    + user.getPhoneNumber().getNationalNumber());
             ps.setTimestamp(6, Timestamp.valueOf(user.getCreated_at()));
 
             // Update values for duplicate
             ps.setString(7, user.getPassword());
             ps.setString(8, user.getRole().name());
-            ps.setString(9, user.getPhoneNumber() == null ? null : user.getPhoneNumber().toString());
+            ps.setString(9, user.getPhoneNumber() == null ? null : "+" + user.getPhoneNumber().getCountryCode()
+                    + user.getPhoneNumber().getNationalNumber());
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -128,11 +131,30 @@ public class UserRepository implements IUserRepository {
     }
 
     private User map(ResultSet rs) throws SQLException {
-        return new User(
+        User user = new User(
                 UUID.fromString(rs.getString("id")),
                 rs.getString("username"),
                 rs.getString("password"),
                 Role.valueOf(rs.getString("role"))
         );
+
+        String phone = rs.getString("phone_number");
+        if (phone != null && phone.startsWith("+")) {
+            Phonenumber.PhoneNumber phoneNumber = new Phonenumber.PhoneNumber();
+
+            // Remove "+"
+            String digits = phone.substring(1);
+
+            // Lebanon example: +961xxxxxx
+            phoneNumber.setCountryCode(961);
+            phoneNumber.setNationalNumber(
+                    Long.parseLong(digits.substring(3))
+            );
+
+            user.setPhoneNumber(phoneNumber);
+        }
+
+        return user;
     }
+
 }

@@ -22,6 +22,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.util.StringConverter;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +37,7 @@ public class CheckInController {
     @FXML private Label roomNumberLabel;
     @FXML private Label checkInDateLabel;
     @FXML private Label checkOutDateLabel;
+
 
     private MainController mainController;
 
@@ -194,6 +196,10 @@ public class CheckInController {
         }
 
         reservationService.checkIn(reservationComboBox.getValue().getId());
+        reservationService.setCheckIn(reservationComboBox.getValue().getId(), LocalDate.now());
+        if (mainController != null) {
+            mainController.loadDashboardData();
+        }
         showSuccess("This room is checked In successfully");
 
         clearInfo();

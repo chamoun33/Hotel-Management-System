@@ -3,7 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -60,7 +59,7 @@
     <HBox alignment="CENTER_RIGHT" spacing="12">
         <Button onAction="#onCancel" prefWidth="90" style="-fx-background-color: #777; -fx-text-fill: white;" text="Cancel" />
 
-        <Button onAction="#onUpdateReservation" prefWidth="120" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Save Changes" />
+        <Button fx:id="saveChangesBtn" onAction="#onUpdateReservation" prefWidth="120" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Save Changes" />
     </HBox>
 
 </VBox>

@@ -1,13 +1,11 @@
 package com.hotel.management.system.controller;
 
 import com.hotel.management.system.database.DB;
-import com.hotel.management.system.model.Guest;
-import com.hotel.management.system.model.Reservation;
-import com.hotel.management.system.model.ReservationStatus;
-import com.hotel.management.system.model.Room;
+import com.hotel.management.system.model.*;
 import com.hotel.management.system.repository.GuestRepository;
 import com.hotel.management.system.repository.ReservationRepository;
 import com.hotel.management.system.repository.RoomRepository;
+import com.hotel.management.system.security.CurrentUser;
 import com.hotel.management.system.service.GuestService;
 import com.hotel.management.system.service.ReservationService;
 import com.hotel.management.system.service.RoomService;
@@ -153,7 +151,11 @@ public class ReservationTableController {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    HBox box = new HBox(8, editBtn, deleteBtn);
+                    HBox box = new HBox(8, editBtn);
+                    if (CurrentUser.get().getRole() == Role.ADMIN) {
+                        box.getChildren().add(deleteBtn);
+
+                    }
                     box.setStyle("-fx-alignment:center;");
                     setGraphic(box);
                 }

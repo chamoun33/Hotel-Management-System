@@ -9,6 +9,7 @@ import com.hotel.management.system.repository.IRoomRepository;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -62,6 +63,10 @@ public class ReservationService {
                 .collect(Collectors.toList());
     }
 
+    public Optional<Reservation> getReservationById(UUID reservationId){
+        return reservationRepository.findById(reservationId);
+    };
+
     public List<Reservation> getAllReservations() {
         return reservationRepository.findAll();
     }
@@ -109,7 +114,11 @@ public class ReservationService {
 
         reservationRepository.updateStatus(reservationId, ReservationStatus.CHECKED_OUT);
 
-        roomRepository.updateStatus(reservation.getRoom().getRoomNumber(), RoomStatus.AVAILABLE);
+        roomRepository.updateStatus(reservation.getRoom().getRoomNumber(), RoomStatus.MAINTENANCE);
+    }
+
+    public void setCheckIn(UUID reservationID, LocalDate today){
+        reservationRepository.setCheckInDate(reservationID, today);
     }
 
 

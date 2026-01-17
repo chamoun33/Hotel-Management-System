@@ -29,8 +29,8 @@ public class PaymentRepository implements IPaymentRepository {
 
         String sql = """
         INSERT INTO payments
-        (id, reservation_id, payment_date, amount, status, method)
-        VALUES (?,?,?,?,?,?)
+        (id, reservation_id, payment_date, amount, status, method, receiver)
+        VALUES (?,?,?,?,?,?,?)
     """;
 
         try (Connection c = connectionProvider.getConnection();
@@ -42,6 +42,7 @@ public class PaymentRepository implements IPaymentRepository {
             ps.setDouble(4, payment.getAmount());
             ps.setString(5, payment.getStatus().name());
             ps.setString(6, payment.getMethod().name());
+            ps.setString(7, payment.getReceiver());
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -110,7 +111,8 @@ public class PaymentRepository implements IPaymentRepository {
                 rs.getTimestamp("payment_date") == null ? null : rs.getTimestamp("payment_date").toLocalDateTime(),
                 rs.getDouble("amount"),
                 PaymentStatus.valueOf(rs.getString("status")),
-                PaymentMethod.valueOf(rs.getString("method"))
+                PaymentMethod.valueOf(rs.getString("method")),
+                rs.getString("receiver")
         );
     }
 }

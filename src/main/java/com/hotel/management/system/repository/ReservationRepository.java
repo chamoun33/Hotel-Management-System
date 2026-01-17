@@ -5,6 +5,7 @@ import com.hotel.management.system.model.*;
 
 import java.sql.*;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.*;
 
 public class ReservationRepository implements IReservationRepository {
@@ -109,6 +110,21 @@ public class ReservationRepository implements IReservationRepository {
             throw new RuntimeException("Error updating reservation status", e);
         }
     }
+
+    public void setCheckInDate(UUID reservationID, LocalDate today){
+        String sql = "UPDATE reservations SET check_in=? WHERE id=?";
+        try (Connection c = connectionProvider.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setDate(1, Date.valueOf(today));
+            ps.setString(2, reservationID.toString());
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error updating reservation status", e);
+        }
+    }
+
 
     private Reservation map(ResultSet rs) throws SQLException {
         // Lazy load guest and room with only IDs

@@ -3,14 +3,17 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.control.ScrollPane?>
-<BorderPane prefHeight="840.0" prefWidth="1000.0" minHeight="840" style="-fx-background-color: #f5f7fa;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hotel.management.system.MainController">
+<BorderPane minHeight="840" prefHeight="840.0" prefWidth="1000.0" style="-fx-background-color: #f5f7fa;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hotel.management.system.MainController">
 
     <!-- TOP HEADER -->
     <top>
@@ -24,17 +27,23 @@
                     <Label style="-fx-text-fill: #666; -fx-font-size: 14;" text="System" />
                 </VBox>
             </HBox>
-
-            <!-- Spacer -->
-            <Separator orientation="VERTICAL" prefHeight="70.0" prefWidth="565.0" style="-fx-padding: 0 20;" visible="false" HBox.hgrow="ALWAYS" />
+         <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
 
             <!-- User Info -->
             <HBox alignment="CENTER" spacing="15">
                 <VBox alignment="CENTER_RIGHT">
                     <Label fx:id="welcomeLabel" style="-fx-text-fill: #333; -fx-font-weight: bold;" text="Welcome, Admin" />
-                    <Label style="-fx-text-fill: #666; -fx-font-size: 12;" text="Administrator" />
+                    <Label fx:id="roleLabel" style="-fx-text-fill: #666; -fx-font-size: 12;" text="Administrator" />
                 </VBox>
-                <Button fx:id="logoutBtn" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-background-radius: 5; -fx-pref-width: 80;" text="Logout" />
+                <Button fx:id="profileBtn" style="-fx-background-color: #d3d3d3; -fx-background-radius: 5; -fx-pref-width: 50;">
+                    <graphic>
+                        <ImageView fitHeight="28" fitWidth="28">
+                            <image>
+                                <Image url="@../../../../assets/Images/profile-icon-white.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
             </HBox>
         </HBox>
     </top>
@@ -50,11 +59,11 @@
             <VBox spacing="5" style="-fx-padding: 0 10 20 10;">
                 <Button fx:id="dashboardBtn" prefHeight="44.0" prefWidth="130.0" style="-fx-background-color: #2196f3; -fx-text-fill: white; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 12 20;" text="📊 Dashboard" />
 
+                <Button fx:id="guestsBtn" prefHeight="44.0" prefWidth="130.0" style="-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 12 20;" text="👥 Guests" />
+
                 <Button fx:id="roomsBtn" prefHeight="44.0" prefWidth="130.0" style="-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 12 20;" text="🛏️ Rooms" />
 
                 <Button fx:id="bookingBtn" prefHeight="44.0" prefWidth="130.0" style="-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 12 20;" text="📅 Booking" />
-
-                <Button fx:id="guestsBtn" prefHeight="44.0" prefWidth="130.0" style="-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 12 20;" text="👥 Guests" />
 
                 <Button fx:id="checkinBtn" prefHeight="44.0" prefWidth="130.0" style="-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 12 20;" text="✅ Check-In" />
 
@@ -84,10 +93,7 @@
 
     <!-- MAIN CONTENT AREA -->
     <center>
-        <ScrollPane fitToWidth="true"
-                    fitToHeight="true"
-                    pannable="true"
-                    style="-fx-background-color: transparent;">
+        <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" style="-fx-background-color: transparent;">
 
             <content>
                 <StackPane fx:id="contentArea" style="-fx-padding: 20;">

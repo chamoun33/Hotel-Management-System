@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox spacing="20" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<VBox spacing="20" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hotel.management.system.controller.DashboardController">
     <padding><Insets bottom="10" left="10" right="10" top="10" /></padding>
 
     <!-- Welcome Section -->
@@ -51,18 +51,18 @@
 
     <!-- Quick Actions -->
     <VBox spacing="10">
-        <Label style="-fx-text-fill: #333; -fx-font-size: 18; -fx-font-weight: bold;" text="Quick Actions" />
+        <Label style="-fx-text-fill: #333; -fx-font-size: 18; -fx-font-weight: bold;" text="Quick Informations" />
         <HBox spacing="15">
             <VBox alignment="CENTER" prefWidth="180" spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2); -fx-padding: 20;">
                 <Label style="-fx-font-size: 32;" text="📋" />
                 <Label style="-fx-text-fill: #333; -fx-font-weight: bold;" text="Check-In" />
-                <Label fx:id="pendingCheckinsLabel" style="-fx-text-fill: #4CAF50; -fx-font-size: 12;" text="3 pending" />
+                <Label fx:id="CheckinsLabel" style="-fx-text-fill: #4CAF50; -fx-font-size: 12;" text="3 pending" />
             </VBox>
 
             <VBox alignment="CENTER" prefWidth="180" spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2); -fx-padding: 20;">
                 <Label style="-fx-font-size: 32;" text="🚪" />
                 <Label style="-fx-text-fill: #333; -fx-font-weight: bold;" text="Check-Out" />
-                <Label fx:id="pendingCheckoutsLabel" style="-fx-text-fill: #f44336; -fx-font-size: 12;" text="2 pending" />
+                <Label fx:id="CheckoutsLabel" style="-fx-text-fill: #f44336; -fx-font-size: 12;" text="2 pending" />
             </VBox>
 
             <VBox alignment="CENTER" prefWidth="180" spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2); -fx-padding: 20;">
@@ -74,24 +74,24 @@
     </VBox>
 
     <!-- Recent Activities -->
-    <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2); -fx-padding: 20;">
-        <Label style="-fx-text-fill: #333; -fx-font-size: 18; -fx-font-weight: bold;" text="Recent Activities" />
-        <VBox spacing="8">
-            <HBox spacing="10">
-                <Label style="-fx-text-fill: #4CAF50;" text="●" />
-                <Label style="-fx-text-fill: #666;" text="Room 101 checked in - John Doe" />
-                <Label alignment="TOP_RIGHT" style="-fx-text-fill: #999; -fx-font-size: 12;" text="2 hours ago" HBox.hgrow="ALWAYS" />
-            </HBox>
-            <HBox spacing="10">
-                <Label style="-fx-text-fill: #f44336;" text="●" />
-                <Label style="-fx-text-fill: #666;" text="Room 205 checked out - Jane Smith" />
-                <Label alignment="TOP_RIGHT" style="-fx-text-fill: #999; -fx-font-size: 12;" text="3 hours ago" HBox.hgrow="ALWAYS" />
-            </HBox>
-            <HBox spacing="10">
-                <Label style="-fx-text-fill: #2196f3;" text="●" />
-                <Label style="-fx-text-fill: #666;" text="Room 310 marked for maintenance" />
-                <Label alignment="TOP_RIGHT" style="-fx-text-fill: #999; -fx-font-size: 12;" text="5 hours ago" HBox.hgrow="ALWAYS" />
-            </HBox>
-        </VBox>
-    </VBox>
+<!--    <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2); -fx-padding: 20;">-->
+<!--        <Label style="-fx-text-fill: #333; -fx-font-size: 18; -fx-font-weight: bold;" text="Recent Activities" />-->
+<!--        <VBox spacing="8">-->
+<!--            <HBox spacing="10">-->
+<!--                <Label style="-fx-text-fill: #4CAF50;" text="●" />-->
+<!--                <Label style="-fx-text-fill: #666;" text="Room 101 checked in - John Doe" />-->
+<!--                <Label alignment="TOP_RIGHT" style="-fx-text-fill: #999; -fx-font-size: 12;" text="2 hours ago" HBox.hgrow="ALWAYS" />-->
+<!--            </HBox>-->
+<!--            <HBox spacing="10">-->
+<!--                <Label style="-fx-text-fill: #f44336;" text="●" />-->
+<!--                <Label style="-fx-text-fill: #666;" text="Room 205 checked out - Jane Smith" />-->
+<!--                <Label alignment="TOP_RIGHT" style="-fx-text-fill: #999; -fx-font-size: 12;" text="3 hours ago" HBox.hgrow="ALWAYS" />-->
+<!--            </HBox>-->
+<!--            <HBox spacing="10">-->
+<!--                <Label style="-fx-text-fill: #2196f3;" text="●" />-->
+<!--                <Label style="-fx-text-fill: #666;" text="Room 310 marked for maintenance" />-->
+<!--                <Label alignment="TOP_RIGHT" style="-fx-text-fill: #999; -fx-font-size: 12;" text="5 hours ago" HBox.hgrow="ALWAYS" />-->
+<!--            </HBox>-->
+<!--        </VBox>-->
+<!--    </VBox>-->
 </VBox>
