@@ -65,6 +65,10 @@ public class RoomService {
                 .count();
     }
 
+    public void updateStatus(int roomNumber, RoomStatus status){
+        roomRepository.updateStatus(roomNumber, status);
+    }
+
     public long getAvailableRoomsCount() {
         return countByStatus(RoomStatus.AVAILABLE);
     }

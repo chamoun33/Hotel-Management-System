@@ -97,7 +97,7 @@
 
             <content>
                 <StackPane fx:id="contentArea" style="-fx-padding: 20;">
-                    <fx:include source="DashboardContent.fxml" />
+<!--                    <fx:include source="DashboardContent.fxml" />-->
                 </StackPane>
             </content>
         </ScrollPane>

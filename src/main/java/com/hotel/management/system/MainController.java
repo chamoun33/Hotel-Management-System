@@ -42,6 +42,7 @@ public class MainController {
     private PaymentService paymentService;
 
     public void initialize() {
+        loadContent("DashboardContent.fxml");
         // Set up button actions
         dashboardBtn.setOnAction(e -> loadContent("DashboardContent.fxml"));
         roomsBtn.setOnAction(e -> loadContent("Rooms.fxml"));
@@ -84,7 +85,7 @@ public class MainController {
     }
 
 
-    private void loadContent(String fxmlFile) {
+    public void loadContent(String fxmlFile) {
         try {
             contentArea.getChildren().clear();
 
@@ -100,6 +101,9 @@ public class MainController {
                 c.setMainController(this);
             }
             else if (controller instanceof CheckOutController c){
+                c.setMainController(this);
+            }
+            else if (controller instanceof  DashboardController c){
                 c.setMainController(this);
             }
 
