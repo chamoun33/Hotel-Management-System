@@ -4,6 +4,8 @@ import com.hotel.management.system.database.DB;
 import com.hotel.management.system.repository.UserRepository;
 import com.hotel.management.system.security.CurrentUser;
 import com.hotel.management.system.service.UserService;
+import com.hotel.management.system.util.AlertUtil;
+import com.hotel.management.system.util.Validator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -32,22 +34,28 @@ public class LoginController {
 
     @FXML
     public void onLogin(ActionEvent event) {
-        String username = usernameField.getText().trim();
-        String password = passwordField.getText().trim();
+        try {
+            String username = usernameField.getText().trim();
+            String password = passwordField.getText().trim();
 
-        if (username.isEmpty() || password.isEmpty()) {
-            showError("Please enter username and password.");
-            return;
+//            if (username.isEmpty() || password.isEmpty()) {
+//                showError("Please enter username and password.");
+//                return;
+//            }
+            Validator.required(usernameField, "Username");
+            Validator.required(passwordField, "Password");
+
+            userService.authenticate(username, password)
+                    .ifPresentOrElse(
+                            user -> {
+                                CurrentUser.set(user);
+                                openDashboard();
+                            },
+                            () -> showError("Invalid username or password.")
+                    );
+        }catch (Exception e){
+            AlertUtil.error(e.getMessage());
         }
-
-        userService.authenticate(username, password)
-                .ifPresentOrElse(
-                        user -> {
-                            CurrentUser.set(user);
-                            openDashboard();
-                        },
-                        () -> showError("Invalid username or password.")
-                );
     }
 
     private void openDashboard() {
@@ -64,7 +72,7 @@ public class LoginController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            showError("Unable to load dashboard.");
+            AlertUtil.error("Unable to load dashboard.");
         }
     }
 

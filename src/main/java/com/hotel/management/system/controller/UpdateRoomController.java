@@ -7,6 +7,9 @@ import com.hotel.management.system.model.RoomStatus;
 import com.hotel.management.system.model.RoomType;
 import com.hotel.management.system.repository.RoomRepository;
 import com.hotel.management.system.service.RoomService;
+import com.hotel.management.system.util.AlertUtil;
+import com.hotel.management.system.util.ValidationException;
+import com.hotel.management.system.util.Validator;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
@@ -41,64 +44,46 @@ public class UpdateRoomController {
         roomTypeCombo.setValue(room.getRoomType().name());
         roomPriceField.setText(String.valueOf(room.getPricePerNight()));
         roomStatusCombo.setValue(room.getStatus().name());
+        if(room.getStatus().name().equals(RoomStatus.OCCUPIED.name())){
+            roomStatusCombo.setDisable(true);
+        }
 
         roomNumberField.setDisable(true);
     }
 
     @FXML
     private void onUpdateRoom() {
-        if (!isInputValid()) return;
-
-        Room updatedRoom = new Room(
-                room.getRoomNumber(), // keep same room number
-                Integer.parseInt(capacityField.getText().trim()),
-                RoomType.valueOf(roomTypeCombo.getValue().toUpperCase()),
-                Double.parseDouble(roomPriceField.getText().trim()),
-                RoomStatus.valueOf(roomStatusCombo.getValue().toUpperCase())
-        );
-
-        roomService.addRoom(updatedRoom); // your save method handles insert/update
-        closeWindow();
-    }
-
-    private boolean isInputValid() {
-        if (roomTypeCombo.getValue() == null || roomTypeCombo.getValue().isBlank()) {
-            showError("Room type is required.");
-            return false;
-        }
-
-        if (roomPriceField.getText() == null || roomPriceField.getText().isBlank()) {
-            showError("Price per night is required.");
-            return false;
-        }
-
-        if (roomStatusCombo.getValue() == null || roomStatusCombo.getValue().isBlank()) {
-            showError("Room status is required.");
-            return false;
-        }
-
-        if (capacityField.getText() == null || capacityField.getText().isBlank()) {
-            showError("Capacity is required.");
-            return false;
-        }
 
         try {
-            Integer.parseInt(capacityField.getText().trim());
-            Double.parseDouble(roomPriceField.getText().trim());
-        } catch (NumberFormatException e) {
-            showError("Capacity must be an integer and price must be a number.");
-            return false;
+
+            Validator.required(roomTypeCombo, "Room type");
+            Validator.required(roomPriceField, "Room price");
+            Validator.required(roomStatusCombo, "Room status");
+            Validator.required(capacityField, "Capacity");
+
+            int capacity = Validator.integer(capacityField, "Capacity");
+            double price = Validator.decimal(roomPriceField, "Room price");
+            RoomType type = RoomType.valueOf(roomTypeCombo.getValue().toUpperCase());
+            RoomStatus status = RoomStatus.valueOf(roomStatusCombo.getValue().toUpperCase());
+
+            Room updatedRoom = new Room(
+                    room.getRoomNumber(), // keep same room number
+                    capacity,
+                    type,
+                    price,
+                    status
+            );
+
+            roomService.addRoom(updatedRoom); // your save method handles insert/update
+            closeWindow();
+
+        } catch (ValidationException e) {
+            AlertUtil.error(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            AlertUtil.error("Invalid room type or status.");
+        } catch (Exception e) {
+            AlertUtil.error("An unexpected error occurred.");
         }
-
-        return true;
-    }
-
-    private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Invalid Input");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
 

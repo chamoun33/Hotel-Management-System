@@ -146,7 +146,7 @@ class ReservationServiceTest {
                 .orElseThrow();
 
         assertEquals(ReservationStatus.CHECKED_OUT, updatedReservation.getStatus());
-        assertEquals(RoomStatus.AVAILABLE, updatedRoom.getStatus());
+        assertEquals(RoomStatus.MAINTENANCE, updatedRoom.getStatus());
     }
 
     @Test

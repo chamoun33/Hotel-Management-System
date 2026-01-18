@@ -124,6 +124,7 @@ public class MainController {
         userManagement.setOnAction(e -> loadContent("UsersManagement.fxml"));
 
         MenuItem logout = new MenuItem("Logout");
+        logout.setStyle("-fx-text-fill: red");
         logout.setOnAction(e -> logout());
 
         profileMenu = new ContextMenu();

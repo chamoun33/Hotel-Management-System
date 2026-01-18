@@ -7,6 +7,8 @@ import com.hotel.management.system.model.User;
 import com.hotel.management.system.repository.UserRepository;
 import com.hotel.management.system.security.CurrentUser;
 import com.hotel.management.system.service.UserService;
+import com.hotel.management.system.util.AlertUtil;
+import com.hotel.management.system.util.Validator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -54,6 +56,8 @@ public class UsersController {
                 )
         );
 
+        usernameField.setDisable(false);
+        roleCombo.setDisable(false);
         addActionsColumn();
         loadUsers();
         handleRowSelection();
@@ -68,53 +72,58 @@ public class UsersController {
 
     @FXML
     public void onAddUser() {
-        if (selectedUser == null){
-            if (!isInputValid()){
-                return;
+        try {
+            if (selectedUser == null) {
+                Validator.required(usernameField, "Username");
+                Validator.required(passwordField, "Password");
+                Validator.required(roleCombo, "Role");
+                Validator.required(phoneField, "Phone Number");
+            } else {
+                Validator.required(usernameField, "Username");
+                Validator.required(roleCombo, "Role");
+                Validator.required(phoneField, "Phone Number");
             }
-        } else {
-            if (!isInputValidUpdt()){
-                return;
+
+
+            Phonenumber.PhoneNumber phoneNumber = null;
+
+            String rawPhone = phoneField.getText().trim();
+            if (!rawPhone.isEmpty()) {
+                phoneNumber = new Phonenumber.PhoneNumber();
+                phoneNumber.setCountryCode(961); // Lebanon
+                phoneNumber.setNationalNumber(Long.parseLong(rawPhone));
             }
-        }
 
+            if (selectedUser == null) {
 
-        Phonenumber.PhoneNumber phoneNumber = null;
-
-        String rawPhone = phoneField.getText().trim();
-        if (!rawPhone.isEmpty()) {
-            phoneNumber = new Phonenumber.PhoneNumber();
-            phoneNumber.setCountryCode(961); // Lebanon
-            phoneNumber.setNationalNumber(Long.parseLong(rawPhone));
-        }
-
-        if (selectedUser == null) {
-
-            // ADD
-            userService.createFullUser(
-                    usernameField.getText(),
-                    passwordField.getText(),
-                    roleCombo.getValue(),
-                    phoneNumber
-            );
-            showSuccess("User added successfully");
-        } else {
-            // UPDATE
-            selectedUser.setRole(roleCombo.getValue());
-            if (!passwordField.getText().isBlank()) {
-                selectedUser.setPassword(passwordField.getText());
+                // ADD
+                userService.createFullUser(
+                        usernameField.getText(),
+                        passwordField.getText(),
+                        roleCombo.getValue(),
+                        phoneNumber
+                );
+                AlertUtil.success("User added successfully");
+            } else {
+                // UPDATE
+                selectedUser.setRole(roleCombo.getValue());
+                if (!passwordField.getText().isBlank()) {
+                    selectedUser.setPassword(passwordField.getText());
+                }
+                userService.createFullUser(
+                        selectedUser.getUsername(),
+                        selectedUser.getPassword(),
+                        selectedUser.getRole(),
+                        phoneNumber
+                );
+                AlertUtil.success("User updated successfully");
             }
-            userService.createFullUser(
-                    selectedUser.getUsername(),
-                    selectedUser.getPassword(),
-                    selectedUser.getRole(),
-                    phoneNumber
-            );
-            showSuccess("User updated successfully");
-        }
 
-        clearForm();
-        loadUsers();
+            clearForm();
+            loadUsers();
+        } catch (Exception e){
+            AlertUtil.error(e.getMessage());
+        }
     }
 
     // ================= DELETE =================
@@ -191,12 +200,25 @@ public class UsersController {
         if (user == null) return;
         selectedUser = user;
 
+        usernameField.setDisable(false);
+        roleCombo.setDisable(false);
+
         usernameField.setText(user.getUsername());
         passwordField.setText("");
         roleCombo.setValue(user.getRole());
-        phoneField.setText(selectedUser.getPhoneNumber() == null ? "N/A" : "+" + selectedUser.getPhoneNumber().getCountryCode()
-                + selectedUser.getPhoneNumber().getNationalNumber());
+
+        phoneField.setText(
+                user.getPhoneNumber() == null
+                        ? "N/A"
+                        : "" + user.getPhoneNumber().getNationalNumber()
+        );
+
+        if (selectedUser.getId().equals(CurrentUser.get().getId())) {
+            usernameField.setDisable(true);
+            roleCombo.setDisable(true);
+        }
     }
+
 
     // ================= UTILS =================
 
@@ -211,50 +233,9 @@ public class UsersController {
         passwordField.clear();
         phoneField.clear();
         roleCombo.setValue(null);
+        usernameField.setDisable(false);
+        roleCombo.setDisable(false);
         usersTable.getSelectionModel().clearSelection();
     }
 
-    private boolean isInputValid() {
-        if (usernameField.getText().isBlank()) {
-            showError("Username is required");
-            return false;
-        }
-        if (passwordField.getText().isBlank()) {
-            showError("Password is required");
-            return false;
-        }
-        if (roleCombo.getValue() == null) {
-            showError("Role is required");
-            return false;
-        }
-        if (phoneField.getText().isBlank()){
-            showError("Phone Number is required");
-            return false;
-        }
-        return true;
-    }
-
-    private boolean isInputValidUpdt() {
-        if (usernameField.getText().isBlank()) {
-            showError("Username is required");
-            return false;
-        }
-        if (roleCombo.getValue() == null) {
-            showError("Role is required");
-            return false;
-        }
-        if (phoneField.getText().isBlank()){
-            showError("Phone Number is required");
-            return false;
-        }
-        return true;
-    }
-
-    private void showError(String msg) {
-        new Alert(Alert.AlertType.ERROR, msg).showAndWait();
-    }
-
-    private void showSuccess(String msg) {
-        new Alert(Alert.AlertType.INFORMATION, msg).showAndWait();
-    }
 }

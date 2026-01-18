@@ -162,14 +162,14 @@ class RoomServiceTest {
         roomService.addRoom(maintenanceRoom2);
         roomService.addRoom(availableRoom);
 
-        long count = roomService.getRoomsUnderMaintenance();
+        long count = roomService.getRoomsUnderMaintenanceCount();
         assertEquals(2, count);
     }
 
     @Test
     void getRoomsUnderMaintenance_WhenNoRoomsUnderMaintenance_ShouldReturnZero() {
         roomService.addRoom(testRoom);
-        long count = roomService.getRoomsUnderMaintenance();
+        long count = roomService.getRoomsUnderMaintenanceCount();
         assertEquals(0, count);
     }
 }

@@ -6,9 +6,9 @@ import java.sql.SQLException;
 
 public class TestDB implements ConnectionProvider {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/hotelManagementSystemTest?serverTimezone=UTC&useSSL=false";
+    private static final String URL = "jdbc:mysql://localhost:3306/HotelManagementSystem?serverTimezone=UTC&useSSL=false";
     private static final String USER = "root";
-    private static final String PASS = "admin123";
+    private static final String PASS = "@DavidO24#001[MySQL]";
 
     private TestDB() {} // prevent instantiation
 

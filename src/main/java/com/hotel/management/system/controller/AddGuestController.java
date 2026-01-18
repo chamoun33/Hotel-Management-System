@@ -10,6 +10,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import com.google.i18n.phonenumbers.Phonenumber;
+import com.hotel.management.system.util.AlertUtil;
+import com.hotel.management.system.util.Validator;
+import com.hotel.management.system.util.ValidationException;
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
 
 
@@ -38,73 +41,35 @@ public class AddGuestController {
     @FXML
     private void onAddGuest() {
 
-        if (!isInputValid()) {
-            return;
-        }
-
         try {
-            Phonenumber.PhoneNumber phoneNumber = null;
+            Validator.required(firstNameField, "First name");
+            Validator.required(lastNameField, "Last name");
+            Validator.required(phoneField, "Phone number");
+            Validator.required(emailField, "Email");
 
-            String rawPhone = phoneField.getText().trim();
-            if (!rawPhone.isEmpty()) {
-                phoneNumber = new Phonenumber.PhoneNumber();
-                phoneNumber.setCountryCode(961); // Lebanon
-                phoneNumber.setNationalNumber(Long.parseLong(rawPhone));
-            }
+            Validator.numeric(phoneField, "Phone number");
+            Validator.email(emailField);
 
+            Phonenumber.PhoneNumber phone = new Phonenumber.PhoneNumber();
+            phone.setCountryCode(961);
+            phone.setNationalNumber(Long.parseLong(phoneField.getText().trim()));
 
             Guest guest = new Guest(
                     UUID.randomUUID(),
                     firstNameField.getText().trim() + " " + lastNameField.getText().trim(),
                     emailField.getText().trim(),
-                    phoneNumber
+                    phone
             );
 
             guestService.addGuest(guest);
-        }catch(NumberFormatException e){
-            showError("Phone number must be numeric!");
-        }catch(Exception e){
-            showError("An error has occurred");
-        }finally {
             closeWindow();
+
+        } catch (ValidationException e) {
+            AlertUtil.error(e.getMessage());
+        } catch (Exception e) {
+            AlertUtil.error("An unexpected error occurred.");
         }
     }
-
-
-
-    private boolean isInputValid() {
-
-        if (firstNameField.getText() == null || firstNameField.getText().isBlank()) {
-            showError("First name is required.");
-            return false;
-        }
-
-        if (lastNameField.getText() == null || lastNameField.getText().isBlank()) {
-            showError("Last name is required.");
-            return false;
-        }
-
-        if (phoneField.getText() == null || phoneField.getText().isBlank()) {
-            showError("Phone Number is required.");
-            return false;
-        }
-
-        if (emailField.getText() == null || emailField.getText().isBlank()) {
-            showError("Email is required.");
-            return false;
-        }
-
-        return true;
-    }
-
-    private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Invalid Input");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
 
 
     @FXML

@@ -10,6 +10,9 @@ import com.hotel.management.system.repository.RoomRepository;
 import com.hotel.management.system.service.GuestService;
 import com.hotel.management.system.service.ReservationService;
 import com.hotel.management.system.service.RoomService;
+import com.hotel.management.system.util.AlertUtil;
+import com.hotel.management.system.util.ValidationException;
+import com.hotel.management.system.util.Validator;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
@@ -195,57 +198,41 @@ public class BookingController {
 
     @FXML
     public void confirmBooking() {
-        Guest guest = guestComboBox.getValue();
-        Room room = roomComboBox.getValue();
-        LocalDate checkIn = checkInDatePicker.getValue();
-        LocalDate checkOut = checkOutDatePicker.getValue();
-
-        if (guest == null || room == null || checkIn == null || checkOut == null) {
-            showError("All fields are required.");
-            return;
-        }
-
-        if (checkIn.isBefore(LocalDate.now()) || checkOut.isBefore(LocalDate.now())) {
-            showError("Reservation date must be after today.");
-            return;
-        }
-
-        if (checkOut.isBefore(checkIn) || checkOut.isEqual(checkIn)) {
-            showError("Check-out date must be after check-in date.");
-            return;
-        }
 
         try {
-            Reservation reservation = reservationService.createReservation(
-                    guest.id(),
-                    room.getRoomNumber(),
-                    checkIn,
-                    checkOut
+            Validator.required(guestComboBox, "Guest");
+            Validator.required(roomComboBox, "Room");
+            Validator.required(checkInDatePicker, "Check-in date");
+            Validator.required(checkOutDatePicker, "Check-out date");
+
+            Validator.dateNotInPast(checkInDatePicker, "Check-in date");
+            Validator.dateNotInPast(checkOutDatePicker, "Check-out date");
+            Validator.dateAfter(
+                    checkInDatePicker,
+                    checkOutDatePicker,
+                    "Check-in date",
+                    "Check-out date"
             );
 
-            showInfo("Reservation confirmed for room " + room.getRoomNumber());
+            Guest guest = guestComboBox.getValue();
+            Room room = roomComboBox.getValue();
+
+            reservationService.createReservation(
+                    guest.id(),
+                    room.getRoomNumber(),
+                    checkInDatePicker.getValue(),
+                    checkOutDatePicker.getValue()
+            );
+
+            AlertUtil.info("Reservation confirmed for room " + room.getRoomNumber());
             clearForm();
 
         } catch (Exception e) {
-            showError(e.getMessage());
+            AlertUtil.error(e.getMessage());
         }
     }
 
-    private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 
-    private void showInfo(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Success");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 
     private void clearForm() {
         guestComboBox.getSelectionModel().clearSelection();

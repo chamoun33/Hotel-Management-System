@@ -104,18 +104,10 @@ public class UpdateReservationController {
     @FXML
     private void onUpdateReservation() {
 
-        reservationService.updateStatus(reservation.getId(), statusComboBox.getValue()); // your save method handles insert/update
+        reservationService.updateStatus(reservation.getId(), statusComboBox.getValue());
         closeWindow();
     }
 
-
-    private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Invalid Input");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 
 
     @FXML

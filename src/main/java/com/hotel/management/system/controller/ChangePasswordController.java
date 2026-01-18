@@ -5,6 +5,9 @@ import com.hotel.management.system.model.User;
 import com.hotel.management.system.repository.UserRepository;
 import com.hotel.management.system.security.CurrentUser;
 import com.hotel.management.system.service.UserService;
+import com.hotel.management.system.util.AlertUtil;
+import com.hotel.management.system.util.ValidationException;
+import com.hotel.management.system.util.Validator;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
@@ -28,67 +31,37 @@ public class ChangePasswordController {
 
 
     @FXML public void onUpdatePassword() {
-        if(!isInputValid()){
-            return;
+        try {
+            Validator.required(currentPasswordField, "Current Password");
+            Validator.required(newPasswordField, "New Password");
+            Validator.required(confirmPasswordField, "Confirm Password");
+
+            Validator.passwordMatches(
+                    user.getPassword(),
+                    currentPasswordField.getText()
+            );
+
+            Validator.passwordDifferent(
+                    user.getPassword(),
+                    newPasswordField.getText()
+            );
+
+            Validator.passwordsMatch(
+                    newPasswordField.getText(),
+                    confirmPasswordField.getText()
+            );
+
+            userService.updatePassword(user.getId(), newPasswordField.getText());
+            user.setPassword(newPasswordField.getText());
+            AlertUtil.success("Password changed successfully");
+
+            closeWindow();
+        } catch (ValidationException e) {
+            AlertUtil.error(e.getMessage());
+        } catch (Exception e) {
+            AlertUtil.error("Failed to update password.");
         }
 
-        userService.updatePassword(user.getId(), newPasswordField.getText());
-        user.setPassword(newPasswordField.getText());
-        showSuccess("Password changed successfully");
-
-        closeWindow();
-
-
-    }
-
-    private boolean isInputValid() {
-        if (currentPasswordField.getText() == null || currentPasswordField.getText().isBlank()) {
-            showError("Current password is required.");
-            return false;
-        }
-
-        if (newPasswordField.getText() == null || newPasswordField.getText().isBlank()) {
-            showError("New Password is required.");
-            return false;
-        }
-
-        if (confirmPasswordField.getText() == null || confirmPasswordField.getText().isBlank()) {
-            showError("Confirm Password is required.");
-            return false;
-        }
-
-        if (!Objects.equals(currentPasswordField.getText(), user.getPassword())){
-            showError("Current password is incorrect");
-            return false;
-        }
-
-        if (!Objects.equals(newPasswordField.getText(), confirmPasswordField.getText())){
-            showError("New password doesn't match!!");
-            return false;
-        }
-
-        if (Objects.equals(newPasswordField.getText(), currentPasswordField.getText())){
-            showError("New password match the current password");
-            return false;
-        }
-
-        return true;
-    }
-
-    private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    private void showSuccess(String message) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Success");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
 

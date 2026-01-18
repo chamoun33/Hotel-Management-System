@@ -12,6 +12,8 @@ import com.hotel.management.system.service.GuestService;
 import com.hotel.management.system.service.PaymentService;
 import com.hotel.management.system.service.ReservationService;
 import com.hotel.management.system.service.RoomService;
+import com.hotel.management.system.util.AlertUtil;
+import com.hotel.management.system.util.Validator;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -206,42 +208,45 @@ public class CheckOutController {
     }
 
     public void onCalculate() {
-        if (!isInputValid()) {
-            return;
+
+        try {
+            Validator.required(occupiedRoomsCombo, "Room");
+
+            Room room = roomService
+                    .getRoom(reservation.getRoom().getRoomNumber())
+                    .orElseThrow(() -> new IllegalStateException("Room not found"));
+
+            double pricePerNight = room.getPricePerNight();
+
+            long nightsStayed = reservationService
+                    .getNumberOfNightsBetweenDates(reservation.getCheckIn(), LocalDate.now());
+
+            // Minimum 1 night
+            if (nightsStayed <= 0) {
+                nightsStayed = 1;
+            }
+
+            double subtotal = pricePerNight * nightsStayed;
+            double taxValue = subtotal * 0.11;
+            double totalPayment = subtotal + taxValue;
+
+            isCalculated = true;
+
+            // UI updates (formatted)
+            roomRateLabel.setText(String.format("$%.2f", pricePerNight));
+            nightsCountLabel.setText(String.valueOf(nightsStayed));
+            subtotalLabel.setText(String.format("$%.2f", subtotal));
+            taxLabel.setText(String.format("$%.2f", taxValue));
+            finalAmountLabel.setText(String.format("$%.2f", totalPayment));
+        } catch (Exception e){
+            AlertUtil.error(e.getMessage());
         }
-
-        Room room = roomService
-                .getRoom(reservation.getRoom().getRoomNumber())
-                .orElseThrow(() -> new IllegalStateException("Room not found"));
-
-        double pricePerNight = room.getPricePerNight();
-
-        long nightsStayed = reservationService
-                .getNumberOfNightsBetweenDates(reservation.getCheckIn(), LocalDate.now());
-
-        // Minimum 1 night
-        if (nightsStayed <= 0) {
-            nightsStayed = 1;
-        }
-
-        double subtotal = pricePerNight * nightsStayed;
-        double taxValue = subtotal * 0.11;
-        double totalPayment = subtotal + taxValue;
-
-        isCalculated = true;
-
-        // UI updates (formatted)
-        roomRateLabel.setText(String.format("$%.2f", pricePerNight));
-        nightsCountLabel.setText(String.valueOf(nightsStayed));
-        subtotalLabel.setText(String.format("$%.2f", subtotal));
-        taxLabel.setText(String.format("$%.2f", taxValue));
-        finalAmountLabel.setText(String.format("$%.2f", totalPayment));
     }
 
 
     public void onCompleteCheckOut() {
         if(!isCalculated){
-            showError("Please calculate the bill before");
+            AlertUtil.error("Please calculate the bill before");
             return;
         }
 

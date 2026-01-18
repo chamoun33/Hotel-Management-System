@@ -9,6 +9,9 @@ import com.hotel.management.system.model.RoomType;
 import com.hotel.management.system.repository.RoomRepository;
 import com.hotel.management.system.security.CurrentUser;
 import com.hotel.management.system.service.RoomService;
+import com.hotel.management.system.util.AlertUtil;
+import com.hotel.management.system.util.ValidationException;
+import com.hotel.management.system.util.Validator;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -75,19 +78,21 @@ public class RoomController {
 
     @FXML
     public void onAddRoom() {
-        if (!isInputValid()) return;
 
         try {
-            int roomNumber = Integer.parseInt(roomNumberField.getText().trim());
+            Validator.required(roomNumberField, "Room number");
+            Validator.required(roomTypeCombo, "Room type");
+            Validator.required(roomPriceField, "Room price");
+            Validator.required(roomStatusCombo, "Room status");
+            Validator.required(capacityField, "Capacity");
+
+            int roomNumber = Validator.integer(roomNumberField, "Room number");
+            int capacity = Validator.integer(capacityField, "Capacity");
+            double price = Validator.decimal(roomPriceField, "Room price");
 
             if (roomService.getRoom(roomNumber).isPresent()) {
-                showError("Room with number " + roomNumber + " already exists!");
-                return;
+                throw new ValidationException("Room with number " + roomNumber + " already exists.");
             }
-
-
-            int capacity = Integer.parseInt(capacityField.getText().trim());
-            double price = Double.parseDouble(roomPriceField.getText().trim());
 
             RoomType type = RoomType.valueOf(roomTypeCombo.getValue().toUpperCase());
             RoomStatus status = RoomStatus.valueOf(roomStatusCombo.getValue().toUpperCase());
@@ -96,14 +101,17 @@ public class RoomController {
             roomService.addRoom(room);
 
             onClear();
-            loadRooms(); // refresh table
+            loadRooms();
 
-        } catch (NumberFormatException e) {
-            showError("Room number, capacity and price must be numeric!");
+        } catch (ValidationException e) {
+            AlertUtil.error(e.getMessage());
         } catch (IllegalArgumentException e) {
-            showError("Invalid Room Type or Status!");
+            AlertUtil.error("Invalid room type or status.");
+        } catch (Exception e) {
+            AlertUtil.error("An unexpected error occurred.");
         }
     }
+
 
 
     private void setupActionsColumn() {
@@ -156,44 +164,6 @@ public class RoomController {
     }
 
 
-
-    private boolean isInputValid() {
-
-        if (roomNumberField.getText() == null || roomNumberField.getText().isBlank()) {
-            showError("Room number is required.");
-            return false;
-        }
-
-        if (roomTypeCombo.getValue() == null || roomTypeCombo.getValue().isBlank()) {
-            showError("Room type is required.");
-            return false;
-        }
-
-        if (roomPriceField.getText() == null || roomPriceField.getText().isBlank()) {
-            showError("Room price is required.");
-            return false;
-        }
-
-        if (roomStatusCombo.getValue() == null || roomStatusCombo.getValue().isBlank()) {
-            showError("Room status is required.");
-            return false;
-        }
-
-        if (capacityField.getText() == null || capacityField.getText().isBlank()) {
-            showError("Room capacity is required.");
-            return false;
-        }
-
-        return true;
-    }
-
-    private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Invalid Input");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 
 
     private void openEditRoomPopup(Room room) {

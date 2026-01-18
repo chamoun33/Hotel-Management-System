@@ -13,6 +13,8 @@ import com.hotel.management.system.repository.RoomRepository;
 import com.hotel.management.system.service.GuestService;
 import com.hotel.management.system.service.ReservationService;
 import com.hotel.management.system.service.RoomService;
+import com.hotel.management.system.util.AlertUtil;
+import com.hotel.management.system.util.Validator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -31,12 +33,18 @@ import java.util.UUID;
 
 public class CheckInController {
 
-    @FXML private ComboBox<Reservation> reservationComboBox;
-    @FXML private Label guestNameLabel;
-    @FXML private Label guestPhoneLabel;
-    @FXML private Label roomNumberLabel;
-    @FXML private Label checkInDateLabel;
-    @FXML private Label checkOutDateLabel;
+    @FXML
+    private ComboBox<Reservation> reservationComboBox;
+    @FXML
+    private Label guestNameLabel;
+    @FXML
+    private Label guestPhoneLabel;
+    @FXML
+    private Label roomNumberLabel;
+    @FXML
+    private Label checkInDateLabel;
+    @FXML
+    private Label checkOutDateLabel;
 
 
     private MainController mainController;
@@ -51,7 +59,6 @@ public class CheckInController {
             mainController.navigateTo("Booking.fxml");
         }
     }
-
 
 
     private ReservationService reservationService;
@@ -70,6 +77,7 @@ public class CheckInController {
                         .orElse("Unknown Guest")
         );
     }
+
     private String resolveGuestPhoneNumber(UUID guestId) {
         return guestPhoneCache.computeIfAbsent(guestId, id ->
                 guestService.getGuestById(id)
@@ -84,7 +92,6 @@ public class CheckInController {
         PhoneNumberUtil util = PhoneNumberUtil.getInstance();
         return util.format(phone, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL);
     }
-
 
 
     @FXML
@@ -191,43 +198,23 @@ public class CheckInController {
 
 
     public void onCheckIn() {
-        if (!isInputValid()) {
-            return;
+
+        try {
+            Validator.required(reservationComboBox, "Reservation");
+
+            reservationService.checkIn(reservationComboBox.getValue().getId());
+            reservationService.setCheckIn(reservationComboBox.getValue().getId(), LocalDate.now());
+
+            if (mainController != null) {
+                mainController.loadDashboardData();
+            }
+            AlertUtil.success("This room is checked In successfully");
+
+            clearInfo();
+            loadReservations();
+        } catch (Exception e) {
+            AlertUtil.error(e.getMessage());
         }
-
-        reservationService.checkIn(reservationComboBox.getValue().getId());
-        reservationService.setCheckIn(reservationComboBox.getValue().getId(), LocalDate.now());
-        if (mainController != null) {
-            mainController.loadDashboardData();
-        }
-        showSuccess("This room is checked In successfully");
-
-        clearInfo();
-        loadReservations();
-    }
-
-    private boolean isInputValid() {
-        if(reservationComboBox.getValue() == null){
-            showError("Please choose a reservation please.");
-            return false;
-        }
-        return true;
-    }
-
-    private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Invalid Input");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    private void showSuccess(String message) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Success");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
 }

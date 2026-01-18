@@ -61,7 +61,7 @@
 
                 <Button fx:id="guestsBtn" prefHeight="44.0" prefWidth="130.0" style="-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 12 20;" text="👥 Guests" />
 
-                <Button fx:id="roomsBtn" prefHeight="44.0" prefWidth="130.0" style="-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 12 20;" text="🛏️ Rooms" />
+                <Button fx:id="roomsBtn" prefHeight="44.0" prefWidth="130.0" style="-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 12 20;" text="🛏 Rooms" />
 
                 <Button fx:id="bookingBtn" prefHeight="44.0" prefWidth="130.0" style="-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 12 20;" text="📅 Booking" />
 
