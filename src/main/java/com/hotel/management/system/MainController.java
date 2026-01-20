@@ -204,6 +204,7 @@ public class MainController {
         guestsBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment:  CENTER_LEFT; -fx-padding:  12 20;");
         checkinBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment:  CENTER_LEFT; -fx-padding:  12 20;");
         checkoutBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment:  CENTER_LEFT; -fx-padding:  12 20;");
+        profileBtn.setStyle("-fx-background-color:  #d3d3d3; -fx-background-radius: 5; -fx-pref-width: 50;");
 
         // Set active button style
         if (fxmlFile.contains("Dashboard")) {
@@ -218,6 +219,8 @@ public class MainController {
             checkinBtn.setStyle("-fx-background-color: #2196f3; -fx-text-fill: white; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment:  CENTER_LEFT; -fx-padding:  12 20;");
         } else if (fxmlFile.contains("CheckOut")) {
             checkoutBtn.setStyle("-fx-background-color: #2196f3; -fx-text-fill: white; -fx-font-size: 14; -fx-background-radius: 5; -fx-alignment:  CENTER_LEFT; -fx-padding:  12 20;");
+        } else if (fxmlFile.contains("UsersManagement")) {
+            profileBtn.setStyle("-fx-background-color:  #2196f3; -fx-background-radius: 5; -fx-pref-width: 50;");
         }
     }
 
